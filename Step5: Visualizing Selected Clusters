@@ -1,0 +1,21 @@
+import matplotlib.pyplot as plt
+
+kmeans_clusterer = KMeans(n_clusters=2) #Vary n_clusters from 2 to 5 
+
+kmeans_preds = kmeans_clusterer.fit_predict(X_trans)
+
+kmeans_score = silhouette_score(X_trans, kmeans_preds)
+
+predictions = pd.DataFrame(kmeans_preds, columns = ['Cluster'])
+    
+plot_data = pd.concat([predictions, data7['Business']], axis=1)
+plt.title('Figure 3a: Foot-Traffic Count Clusters (Clusters=2), 2016:Q1', fontsize=16) #Vary n_clusters from 2 to 5
+fig_size=plt.rcParams['figure.figsize']
+fig_size[0]=12
+fig_size[1]=4
+plt.rcParams['figure.figsize']=fig_size
+plt.scatter(plot_data['Cluster'], plot_data['Business'], c=kmeans_preds, s=40, cmap='viridis');
+figure1 = plt.gca()
+figure1.axes.get_yaxis().set_visible(False)
+plt.savefig(r'C:\Users\chris\Desktop\TDI_Capstone_Visualizations\Foot-Traffic_Clusters=2.pdf',bbox_inches="tight",pad_inches=2)
+plt.show()
