@@ -1,3 +1,5 @@
+#Graphing and comparing clustering scores
+
 import matplotlib.pyplot as plt
 
 gmm_plot,=plt.plot(gmm_clusters,gmm_silhouette)
