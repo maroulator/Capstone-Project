@@ -1,0 +1,47 @@
+#Data pre-processing
+import pandas as pd
+import numpy as np
+import datetime as dt
+
+facebook_data=pd.read_csv('temp_datalab_records_social_facebook.csv')
+weekday_data=pd.read_csv('WeekdayCalendar.csv')
+facebook_data=facebook_data[['time','username','were_here_count']]
+facebook_data['time']=pd.to_datetime(facebook_data['time'])
+facebook_data[['time']]=facebook_data['time'].dt.date 
+column_names=['Date','Business','were_here_count']
+facebook_data.columns=column_names
+facebook_data['Date']=pd.to_datetime(facebook_data['Date'], format="%Y-%m-%d")
+weekday_data['Date']=pd.to_datetime(weekday_data['Date'], format="%Y-%m-%d")
+
+data=pd.merge(facebook_data,weekday_data,how='left',on='Date')
+del weekday_data
+del facebook_data
+del column_names
+data1=data.sort_values(by=['Business','Date'])
+del data
+
+#This block of code limits your series to 1.5 years worth of data
+data2=data1.groupby(['Business','Weekday']).size().sort_values(ascending=False)
+data3=data2[data2>=80]
+data4=data3.reset_index()
+data5=data4.sort_values(by='Business',ascending=False)
+usernames=data4['Business'].drop_duplicates()
+#This block of code differences the data to give us non-cumulative observations
+data6=pd.DataFrame()
+
+for x in usernames:
+
+    data5=data1.loc[(data1['Business']==x)]
+    s2 = pd.Series([0,0,0,0], index=['Date','Business','were_here_count','Weekday'])
+    data5 = data5.append(s2,ignore_index=True)
+    data5['were_here_count_lag'] = data5['were_here_count'].shift(1)
+    data5['count'] = data5['were_here_count']-data5['were_here_count_lag']
+    data6 = data6.append(data5,ignore_index=True)
+    data6=data6.loc[data6['count']>0]
+
+data6[['Date']]=pd.to_datetime(data6['Date'])
+data7=data6.loc[(data6['Date']>='2016-01-01') & (data6['Date']<='2016-03-31')]
+data7=data7.groupby(['Business']).sum()
+data7=data7.reset_index()
+data7=data7[['Business','count']]
+#data7
