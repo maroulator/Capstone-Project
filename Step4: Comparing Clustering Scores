@@ -1,0 +1,21 @@
+import matplotlib.pyplot as plt
+
+gmm_plot,=plt.plot(gmm_clusters,gmm_silhouette)
+kmeans_plot,=plt.plot(kmeans_clusters,kmeans_silhouette)
+plt.title('Figure 2: Clustering Scores Comparison, 2016:Q1', fontsize=16)
+plt.xlabel('No. Clusters', fontsize=12)
+plt.ylabel('Silhouette Score', fontsize=12)
+plt.legend([gmm_plot,kmeans_plot],["GMM", "KMeans"])
+#plt.legend(loc=5, prop={'size': 12})
+fig_size=plt.rcParams['figure.figsize']
+fig_size[0]=12
+fig_size[1]=6
+plt.rcParams['figure.figsize']=fig_size
+plt.savefig(r'C:\Users\chris\Desktop\TDI_Capstone_Visualizations\ClusteringScores.pdf',bbox_inches="tight",pad_inches=2)
+plt.show()
+
+if best_gmm>best_kmeans:
+    print('GMM Silhoutte score is the highest. Apply GMM Clustering with the following number of clusters')
+    print(gmm_clusters[best_gmm_score_index])
+else:
+    print('KMeans Silhouette score is the highest. Apply KMeans Clustering.')
