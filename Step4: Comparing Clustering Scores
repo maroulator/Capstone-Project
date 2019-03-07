@@ -6,7 +6,6 @@ plt.title('Figure 2: Clustering Scores Comparison, 2016:Q1', fontsize=16)
 plt.xlabel('No. Clusters', fontsize=12)
 plt.ylabel('Silhouette Score', fontsize=12)
 plt.legend([gmm_plot,kmeans_plot],["GMM", "KMeans"])
-#plt.legend(loc=5, prop={'size': 12})
 fig_size=plt.rcParams['figure.figsize']
 fig_size[0]=12
 fig_size[1]=6
