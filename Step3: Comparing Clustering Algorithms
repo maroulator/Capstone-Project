@@ -1,0 +1,53 @@
+#Clustering and Determining Best Clustering Algorithm
+from sklearn import mixture
+from sklearn.cluster import KMeans
+from sklearn.model_selection import KFold, GridSearchCV
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import make_scorer, silhouette_score
+import operator
+import pandas
+
+scaler = StandardScaler()
+X_trans = scaler.fit_transform(data7['count'].values.reshape(-1,1)) 
+gmm_silhouette=[]
+gmm_clusters=[]
+gmm_scores={}    
+for i in range(2,30):
+    
+    gmm_clusterer = mixture.GaussianMixture(n_components=i)
+    gmm_clusterer.fit(X_trans)
+
+#Predicting the cluster for each data point
+    gmm_preds = gmm_clusterer.predict(X_trans)
+
+# Finding the cluster centers
+    gmm_centers = np.empty(shape=(gmm_clusterer.n_components, X_trans.shape[0])) #Maybe an error here
+
+# Calculating the mean silhouette coefficient for the number of clusters chosen
+    gmm_score = silhouette_score(X_trans, gmm_preds)
+    gmm_scores[i]=[gmm_score]
+    gmm_silhouette.append(gmm_score)
+    gmm_clusters.append(i)
+    #print("After {} clusters, the GMM silhouette score is this: {}".format(i, gmm_score))
+
+best_gmm=max(gmm_scores.items(), key=operator.itemgetter(1))[1]
+
+
+from sklearn.cluster import KMeans 
+kmeans_silhouette=[]
+kmeans_clusters=[]
+kmeans_scores={} 
+for j in range(2,30):
+# TODO: Create an instance of KMeans to find two clusters
+    kmeans_clusterer = KMeans(n_clusters=j)
+
+# TODO: use fit_predict to cluster the dataset
+    kmeans_preds = kmeans_clusterer.fit_predict(X_trans)
+
+    kmeans_score = silhouette_score(X_trans, kmeans_preds)
+    kmeans_scores[j]=[kmeans_score]
+    kmeans_silhouette.append(kmeans_score)
+    kmeans_clusters.append(j)
+    #print("After {} clusters, the KMeans silhouette score is this: {}".format(j, kmeans_score))
+    
+best_kmeans=max(kmeans_scores.items(), key=operator.itemgetter(1))[1]
